@@ -1,43 +1,55 @@
-const throttle = require('lodash.throttle');
+// Import lodash.throttle library
+import throttle from 'lodash.throttle';
 
-const form = document.querySelectorAll(".feedback-form")
+// QS
+const form = document.querySelector(".feedback-form");
 
-form.addEventListener("input",throttle(formInput,500, {'trailing': false}));
+// Event listener to inout data to local storage
+form.addEventListener("input", throttle(addToStorage, 500));
 
-function formInput (e){
-    localStorage.setItem("feedback-form-state", JSON.stringify(createField(e)));
+// Function which save the data to local storage
+function addToStorage (e){
+    localStorage.setItem("feedback-form-state", JSON.stringify(inputValues(e)));
 }
 
-function createField (){
-    if (JSON.parse(localStorage.getItem("feedback-form-state")) === null) {
-        return;
-      }
-    
-      const {email, message} = form.elements;
-    
-      const getValues = JSON.parse(localStorage.getItem("feedback-form-state"));
-    
-      email.value = getValues.email;
-      message.value = getValues.message;  
+
+//Function which reload values from local stroage
+function ReloadValuesFromStorage() {
+    if (JSON.parse(localStorage.getItem("feedback-form-state")) === null){
+    return;
     }
 
+    const {email, message} = form.elements;
 
-form.addEventListener("submit", formSubmit)
+    const getValues = JSON.parse(localStorage.getItem("feedback-form-state"));
 
-function formSubmit(e){
-    e.preventDefault();
-    console.log(currentFormValues(e));
-    form.reset();
-    localStorage.removeItem("feedback-form-state");
+    getValues.email = email.value;
+    getValues.message = message.value;
 }
 
-function currentFormValues(e) {
+ReloadValuesFromStorage();
+
+//Function which clean the storage
+form.addEventListener("submit", clearStorage);
+
+function clearStorage(e){
+    e.preventDefault();
+    console.log(inputValues(e));
+    localStorage.removeItem("feedback-form-state");
+    e.currentTarget.reset();
+}
+
+// Function which return the current values of the input form
+function inputValues (e){
+    e.preventDefault();
     const formValues = {};
-  
-    const {email, message} = e.currentTarget.elements;
-  
+    
+    const {
+        elements: { email, message },
+      } = e.currentTarget;
+
     formValues.email = email.value;
     formValues.message = message.value;
-  
-    return formValues;
-  }
+
+     return formValues;
+}
