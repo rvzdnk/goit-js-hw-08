@@ -31,8 +31,8 @@ function reloadValuesFromStorage() {
     }
 
     let getValues = jsonParse('feedback-form-state');
-    feedbackForm.elements.email.value = getValues.email;
-    feedbackForm.elements.message.value = getValues.message;
+    form.elements.email.value = getValues.email;
+    form.elements.message.value = getValues.message;
   }
 
 
